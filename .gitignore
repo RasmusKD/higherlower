@@ -1,0 +1,13 @@
+# Composer
+/vendor/
+composer.lock
+
+# Miljøfiler
+.env
+
+# IDE (PhpStorm m.m.)
+.idea/
+
+# OS-filer
+.DS_Store
+Thumbs.db
