@@ -2,50 +2,82 @@
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
+
+$isAdmin = ($_SESSION['user'] ?? '') === 'admin';
+$loginError = $_SESSION['login_error'] ?? null;
+unset($_SESSION['login_error']);
 ?>
 
 <!DOCTYPE html>
 <html lang="da">
 <head>
     <meta charset="UTF-8">
-    <title>Higher Lower – Before or After</title>
+    <title>Before or After</title>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-neutral-900 text-white min-h-screen flex items-center justify-center">
+<body class="bg-neutral-900 text-white min-h-screen flex flex-col items-center">
 
-<div class="w-full max-w-md bg-neutral-800 p-6 rounded-xl shadow-lg">
-    <h1 class="text-2xl font-bold mb-4 text-center">Higher Lower – Before or After</h1>
+<!-- Logo -->
+<header class="mt-12 mb-8 text-center">
+    <h1 class="text-6xl font-extrabold tracking-wide">Before or After</h1>
+</header>
 
-    <?php if (!isset($_SESSION['user'])): ?>
-        <div class="space-y-6">
+<?php if (isset($_SESSION['user'])): ?>
+    <!-- Navigation -->
+    <nav class="flex flex-col items-center gap-4 mb-12 w-full max-w-xs">
+        <a href="/game" class="w-full text-center bg-green-600 hover:bg-green-700 py-3 rounded text-lg font-medium">Start spil</a>
+        <a href="/leaderboard" class="w-full text-center bg-blue-600 hover:bg-blue-700 py-3 rounded text-lg font-medium">Leaderboard</a>
+        <a href="/rules" class="w-full text-center bg-neutral-700 hover:bg-neutral-600 py-3 rounded text-lg font-medium">Regler</a>
+        <?php if ($isAdmin): ?>
+            <a href="/admin" class="w-full text-center bg-red-600 hover:bg-red-700 py-3 rounded text-lg font-medium">Adminpanel</a>
+        <?php endif; ?>
+        <a href="/logout" class="w-full text-center bg-neutral-800 hover:bg-neutral-700 py-3 rounded text-lg font-medium">Log ud</a>
+    </nav>
+<?php else: ?>
+    <!-- Login/Register box -->
+    <main class="w-full max-w-md bg-neutral-800 p-6 rounded-xl shadow-lg">
+        <?php if ($loginError): ?>
+            <div class="bg-red-600 text-white px-4 py-2 rounded mb-4 text-center">
+                <?= htmlspecialchars($loginError) ?>
+            </div>
+        <?php endif; ?>
 
-            <!-- Login -->
-            <form action="/login" method="post" class="space-y-3">
-                <h2 class="text-xl font-semibold">Login</h2>
-                <input name="email" type="email" placeholder="Email" required class="w-full p-2 rounded bg-neutral-700 border border-neutral-600">
-                <input name="password" type="password" placeholder="Kodeord" required class="w-full p-2 rounded bg-neutral-700 border border-neutral-600">
-                <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 transition text-white py-2 rounded">Login</button>
-            </form>
-
-            <hr class="border-neutral-700">
-
-            <!-- Register -->
-            <form action="/register" method="post" class="space-y-3">
-                <h2 class="text-xl font-semibold">Registrér</h2>
-                <input name="username" placeholder="Brugernavn" required class="w-full p-2 rounded bg-neutral-700 border border-neutral-600">
-                <input name="email" type="email" placeholder="Email" required class="w-full p-2 rounded bg-neutral-700 border border-neutral-600">
-                <input name="password" type="password" placeholder="Kodeord" required class="w-full p-2 rounded bg-neutral-700 border border-neutral-600">
-                <button type="submit" class="w-full bg-green-600 hover:bg-green-700 transition text-white py-2 rounded">Registrér</button>
-            </form>
-
+        <!-- Toggle buttons -->
+        <div class="flex justify-center gap-4 mb-6">
+            <button onclick="showForm('login')" class="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded">Login</button>
+            <button onclick="showForm('register')" class="bg-green-600 hover:bg-green-700 px-4 py-2 rounded">Registrér</button>
         </div>
-    <?php else: ?>
-        <div class="text-center space-y-4">
-            <p class="text-lg">✅ Logget ind som <strong><?= htmlspecialchars($_SESSION['user']) ?></strong></p>
-            <a href="/logout" class="inline-block bg-red-600 hover:bg-red-700 transition text-white px-4 py-2 rounded">Log ud</a>
-        </div>
-    <?php endif; ?>
-</div>
+
+        <!-- Login form -->
+        <form id="login-form" action="/login" method="post" class="space-y-3 hidden">
+            <input name="email" type="email" placeholder="Email" required class="w-full p-2 rounded bg-neutral-700 border border-neutral-600">
+            <input name="password" type="password" placeholder="Kodeord" required class="w-full p-2 rounded bg-neutral-700 border border-neutral-600">
+            <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 transition text-white py-2 rounded">Login</button>
+        </form>
+
+        <!-- Register form -->
+        <form id="register-form" action="/register" method="post" class="space-y-3 hidden">
+            <input name="username" placeholder="Brugernavn" required class="w-full p-2 rounded bg-neutral-700 border border-neutral-600">
+            <input name="email" type="email" placeholder="Email" required class="w-full p-2 rounded bg-neutral-700 border border-neutral-600">
+            <input name="password" type="password" placeholder="Kodeord" required class="w-full p-2 rounded bg-neutral-700 border border-neutral-600">
+            <button type="submit" class="w-full bg-green-600 hover:bg-green-700 transition text-white py-2 rounded">Registrér</button>
+        </form>
+
+        <script>
+            function showForm(type) {
+                document.getElementById('login-form').classList.add('hidden');
+                document.getElementById('register-form').classList.add('hidden');
+                if (type === 'login') {
+                    document.getElementById('login-form').classList.remove('hidden');
+                } else {
+                    document.getElementById('register-form').classList.remove('hidden');
+                }
+            }
+            // Vis login form som standard
+            showForm('login');
+        </script>
+    </main>
+<?php endif; ?>
 
 </body>
 </html>
