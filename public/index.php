@@ -1,5 +1,6 @@
 <?php
-require_once __DIR__ . '/../app/routes.php'; // Load routes
+define('BASE_PATH', dirname(__DIR__));
+require_once BASE_PATH . '/app/routes.php';
 
 // Call the router
 routeRequest();

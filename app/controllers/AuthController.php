@@ -4,7 +4,8 @@ class AuthController
 {
     public function login()
     {
-        require_once 'db.php';
+        $pdo = require __DIR__ . '/../../db.php';
+
 
         $email = $_POST['email'] ?? '';
         $password = $_POST['password'] ?? '';
@@ -17,6 +18,7 @@ class AuthController
             session_start();
             $_SESSION['user'] = $user['username'];
             header('Location: /');
+            exit;
         } else {
             echo "Forkert login.";
         }
@@ -24,7 +26,7 @@ class AuthController
 
     public function register()
     {
-        require_once 'db.php';
+        $pdo = require __DIR__ . '/../../db.php';
 
         $username = $_POST['username'] ?? '';
         $email = $_POST['email'] ?? '';
@@ -34,6 +36,7 @@ class AuthController
         $stmt->execute([$username, $email, $password]);
 
         header('Location: /');
+        exit;
     }
 
     public function logout()
@@ -41,5 +44,6 @@ class AuthController
         session_start();
         session_destroy();
         header('Location: /');
+        exit;
     }
 }
