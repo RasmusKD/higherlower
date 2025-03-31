@@ -1,0 +1,11 @@
+# .htaccess
+RewriteEngine On
+
+# Serve static files directly
+RewriteCond %{REQUEST_FILENAME} -f
+RewriteRule \.(js|css|png|jpg|jpeg|gif)$ - [L]
+
+# Handle other requests via index.php
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule . /index.php [L]

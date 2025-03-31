@@ -1,4 +1,7 @@
 <?php
+if (preg_match('/\.(?:js|css|png|jpg|jpeg|gif)$/', $_SERVER["REQUEST_URI"])) {
+    return false; // Serve the requested resource as-is.
+}
 require_once __DIR__ . '/controllers/HomeController.php';
 require_once __DIR__ . '/controllers/AuthController.php';
 require_once __DIR__ . '/controllers/AdminController.php'; // tilføjet
