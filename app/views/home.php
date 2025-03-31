@@ -1,19 +1,4 @@
-<?php
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
-}
-
-require_once __DIR__ . '/../models/User.php';
-$pdo = require __DIR__ . '/../../db.php';
-$userModel = new User($pdo);
-
-$currentUser = $userModel->getCurrentUser();
-$isLoggedIn = $currentUser !== null;
-$isAdmin = $userModel->isAdmin($currentUser ?? []);
-$loginError = $_SESSION['login_error'] ?? null;
-unset($_SESSION['login_error']);
-?>
-
+<!-- home.php -->
 <!DOCTYPE html>
 <html lang="da">
 <head>
@@ -33,12 +18,21 @@ unset($_SESSION['login_error']);
     <nav class="flex flex-col items-center gap-4 mb-12 w-full max-w-xs">
         <a href="/game" class="w-full text-center bg-green-600 hover:bg-green-700 py-3 rounded text-lg font-medium">Start spil</a>
         <a href="/leaderboard" class="w-full text-center bg-blue-600 hover:bg-blue-700 py-3 rounded text-lg font-medium">Leaderboard</a>
-        <a href="/rules" class="w-full text-center bg-neutral-700 hover:bg-neutral-600 py-3 rounded text-lg font-medium">Regler</a>
+        <button id="rulesButton" class="w-full text-center bg-neutral-700 hover:bg-neutral-600 py-3 rounded text-lg font-medium">Regler</button>
         <?php if ($isAdmin): ?>
             <a href="/admin" class="w-full text-center bg-red-600 hover:bg-red-700 py-3 rounded text-lg font-medium">Adminpanel</a>
         <?php endif; ?>
         <a href="/logout" class="w-full text-center bg-neutral-800 hover:bg-neutral-700 py-3 rounded text-lg font-medium">Log ud</a>
     </nav>
+
+    <!-- Pop-up -->
+    <div id="rulesPopup" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden">
+        <div class="bg-white text-black p-6 rounded-lg shadow-lg relative">
+            <button class="close absolute top-2 right-2 text-2xl">&times;</button>
+            <h2 class="text-2xl font-bold mb-4">Regler</h2>
+            <p>Her er reglerne for brug af denne side...</p>
+        </div>
+    </div>
 
 <?php else: ?>
     <!-- Login/Register box -->
@@ -85,5 +79,6 @@ unset($_SESSION['login_error']);
     </main>
 <?php endif; ?>
 
+<script src="/js/scripts.js"></script>
 </body>
 </html>
