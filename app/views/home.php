@@ -25,7 +25,7 @@ unset($_SESSION['login_error']);
 
 <!-- Logo -->
 <header class="mt-12 mb-8 text-center">
-    <h1 class="text-6xl font-extrabold tracking-wide">Before or After</h1>
+    <h1 class="text-8xl font-extrabold tracking-wide">Before or After</h1>
 </header>
 
 <?php if ($isLoggedIn): ?>
