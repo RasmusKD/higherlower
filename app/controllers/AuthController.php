@@ -1,53 +1,49 @@
 <?php
+require_once __DIR__ . '/../models/User.php';
 
 class AuthController
 {
     public function login()
     {
-        $pdo = require_once __DIR__ . '/../../db.php';
+        $pdo = require __DIR__ . '/../../db.php';
+        $userModel = new User($pdo);
 
         $email = $_POST['email'] ?? '';
         $password = $_POST['password'] ?? '';
+        $user = $userModel->findByEmail($email);
 
-        $stmt = $pdo->prepare("SELECT * FROM users WHERE email = ?");
-        $stmt->execute([$email]);
-        $user = $stmt->fetch();
+        session_start();
 
         if ($user && password_verify($password, $user['password'])) {
-            session_start();
             $_SESSION['user'] = $user['username'];
             $_SESSION['is_admin'] = $user['is_admin'];
-            header('Location: /');
-            exit;
         } else {
-            session_start();
             $_SESSION['login_error'] = "Forkert email eller kodeord.";
-            header('Location: /');
-            exit;
         }
+
+        header('Location: /');
+        exit;
     }
 
     public function register()
     {
-        $pdo = require_once __DIR__ . '/../../db.php';
+        $pdo = require __DIR__ . '/../../db.php';
+        $userModel = new User($pdo);
 
         $username = $_POST['username'] ?? '';
         $email = $_POST['email'] ?? '';
-        $passwordRaw = $_POST['password'] ?? '';
-
-        // Simpelt tjek
-        if (!$username || !$email || !$passwordRaw) {
-            header('Location: /');
-            exit;
-        }
-
-        $password = password_hash($passwordRaw, PASSWORD_DEFAULT);
-
-        $stmt = $pdo->prepare("INSERT INTO users (username, email, password, is_admin) VALUES (?, ?, ?, 0)");
-        $stmt->execute([$username, $email, $password]);
+        $password = $_POST['password'] ?? '';
 
         session_start();
-        $_SESSION['user'] = $username;
+
+        if (!$username || !$email || !$password) {
+            $_SESSION['login_error'] = "Udfyld alle felter.";
+        } else {
+            $userModel->create($username, $email, $password);
+            $_SESSION['user'] = $username;
+            $_SESSION['is_admin'] = 0;
+        }
+
         header('Location: /');
         exit;
     }
