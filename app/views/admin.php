@@ -20,10 +20,10 @@ $events = $eventModel->getAll();
 
 <h1 class="text-5xl font-bold mb-8">Adminpanel</h1>
 
-<form method="POST" action="/admin/create" enctype="multipart/form-data" class="...">
+<form method="POST" action="/admin/create" enctype="multipart/form-data" class="w-full max-w-xl bg-neutral-800 p-6 rounded-lg space-y-4 mb-10">
     <input name="title" placeholder="Titel" required class="w-full p-3 bg-neutral-700 rounded border border-neutral-600">
     <input name="year" type="number" placeholder="Årstal" required class="w-full p-3 bg-neutral-700 rounded border border-neutral-600">
-    <input name="image" type="file" accept="image/*" required class="w-full p-3 bg-neutral-700 rounded border border-neutral-600">
+    <input name="image" type="file" accept="image/*" required class="w-full p-3 bg-neutral-700 rounded border border-neutral-600 file:text-white file:bg-neutral-600 file:border-none file:px-4 file:py-2 file:rounded file:mr-2">
     <button type="submit" class="w-full py-3 bg-green-600 hover:bg-green-700 rounded text-lg">Opret Event</button>
 </form>
 
