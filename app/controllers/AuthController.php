@@ -4,8 +4,7 @@ class AuthController
 {
     public function login()
     {
-        $pdo = require __DIR__ . '/../../db.php';
-
+        $pdo = require_once __DIR__ . '/../../db.php';
 
         $email = $_POST['email'] ?? '';
         $password = $_POST['password'] ?? '';
@@ -17,24 +16,38 @@ class AuthController
         if ($user && password_verify($password, $user['password'])) {
             session_start();
             $_SESSION['user'] = $user['username'];
+            $_SESSION['is_admin'] = $user['is_admin'];
             header('Location: /');
             exit;
         } else {
-            echo "Forkert login.";
+            session_start();
+            $_SESSION['login_error'] = "Forkert email eller kodeord.";
+            header('Location: /');
+            exit;
         }
     }
 
     public function register()
     {
-        $pdo = require __DIR__ . '/../../db.php';
+        $pdo = require_once __DIR__ . '/../../db.php';
 
         $username = $_POST['username'] ?? '';
         $email = $_POST['email'] ?? '';
-        $password = password_hash($_POST['password'] ?? '', PASSWORD_DEFAULT);
+        $passwordRaw = $_POST['password'] ?? '';
 
-        $stmt = $pdo->prepare("INSERT INTO users (username, email, password) VALUES (?, ?, ?)");
+        // Simpelt tjek
+        if (!$username || !$email || !$passwordRaw) {
+            header('Location: /');
+            exit;
+        }
+
+        $password = password_hash($passwordRaw, PASSWORD_DEFAULT);
+
+        $stmt = $pdo->prepare("INSERT INTO users (username, email, password, is_admin) VALUES (?, ?, ?, 0)");
         $stmt->execute([$username, $email, $password]);
 
+        session_start();
+        $_SESSION['user'] = $username;
         header('Location: /');
         exit;
     }

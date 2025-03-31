@@ -3,7 +3,7 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-$isAdmin = ($_SESSION['user'] ?? '') === 'admin';
+$isAdmin = isset($_SESSION['is_admin']) && $_SESSION['is_admin'] == 1;
 $loginError = $_SESSION['login_error'] ?? null;
 unset($_SESSION['login_error']);
 ?>
@@ -19,7 +19,7 @@ unset($_SESSION['login_error']);
 
 <!-- Logo -->
 <header class="mt-12 mb-8 text-center">
-    <h1 class="text-6xl font-extrabold tracking-wide">Before or After</h1>
+    <h1 class="text-8xl font-extrabold tracking-wide">Before or After</h1>
 </header>
 
 <?php if (isset($_SESSION['user'])): ?>
@@ -36,11 +36,6 @@ unset($_SESSION['login_error']);
 <?php else: ?>
     <!-- Login/Register box -->
     <main class="w-full max-w-md bg-neutral-800 p-6 rounded-xl shadow-lg">
-        <?php if ($loginError): ?>
-            <div class="bg-red-600 text-white px-4 py-2 rounded mb-4 text-center">
-                <?= htmlspecialchars($loginError) ?>
-            </div>
-        <?php endif; ?>
 
         <!-- Toggle buttons -->
         <div class="flex justify-center gap-4 mb-6">
@@ -50,10 +45,17 @@ unset($_SESSION['login_error']);
 
         <!-- Login form -->
         <form id="login-form" action="/login" method="post" class="space-y-3 hidden">
+            <?php if ($loginError): ?>
+                <div class="bg-red-600 text-white px-4 py-2 rounded text-sm text-center">
+                    <?= htmlspecialchars($loginError) ?>
+                </div>
+            <?php endif; ?>
+
             <input name="email" type="email" placeholder="Email" required class="w-full p-2 rounded bg-neutral-700 border border-neutral-600">
             <input name="password" type="password" placeholder="Kodeord" required class="w-full p-2 rounded bg-neutral-700 border border-neutral-600">
             <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 transition text-white py-2 rounded">Login</button>
         </form>
+
 
         <!-- Register form -->
         <form id="register-form" action="/register" method="post" class="space-y-3 hidden">
