@@ -14,8 +14,6 @@ $loginError = $_SESSION['login_error'] ?? null;
 unset($_SESSION['login_error']);
 ?>
 
-// Resten af din HTML-kode
-?>
 <!DOCTYPE html>
 <html lang="da">
 <head>
@@ -27,7 +25,7 @@ unset($_SESSION['login_error']);
 
 <!-- Logo -->
 <header class="mt-12 mb-8 text-center">
-    <h1 class="text-6xl font-extrabold tracking-wide">Before or After</h1>
+    <h1 class="text-8xl font-extrabold tracking-wide">Before or After</h1>
 </header>
 
 <?php if ($isLoggedIn): ?>
@@ -42,13 +40,8 @@ unset($_SESSION['login_error']);
         <a href="/logout" class="w-full text-center bg-neutral-800 hover:bg-neutral-700 py-3 rounded text-lg font-medium">Log ud</a>
     </nav>
 
-    <!-- Pop-up -->
-    <div id="rulesPopup" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden">
-        <div class="bg-white text-black p-6 rounded-lg shadow-lg relative">
-            <button class="close absolute top-2 right-2 text-2xl">&times;</button>
-            <div class="content"></div>
-        </div>
-    </div>
+    <!-- Regler-modal -->
+    <?php include __DIR__ . '/components/rules_modal.php'; ?>
 
 <?php else: ?>
     <!-- Login/Register box -->
