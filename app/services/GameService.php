@@ -11,7 +11,8 @@ class GameService
         'space', 'scientific', 'political', 'cultural', 'sports', 'programming',
         'computer', 'internet', 'president', 'music', 'art', 'film',
         'technology', 'medicine', 'religion', 'aircraft', 'democracy',
-        'exploration', 'olympics', 'pandemic', 'communication'
+        'exploration', 'olympics', 'pandemic', 'communication', 'computer',
+        'gaming'
     ];
 
     // Bruges til at undgå gentagelser af begivenheder i samme spilsession
